@@ -71,7 +71,6 @@ export interface IUserRow extends ICrudRow, IEditUser {
  * @description 사용자 관리 페이지 관리를 위해 사용되는 인터페이스입니다.
  */
 export interface IManageUserPage {
-  entireDivisionValue: Record<EMessageDivision, number>;
   editUser: IEditUser;
   table: ICrudDataTable;
   editIndividualMessage: IEditIndividualMessage;

@@ -17,6 +17,7 @@ import {
   IMessageDivision,
   IResponseDivisionValueList, IUserRow
 } from "@/types/views/admin/user";
+import SetUpDivisionValue from "@/views/admin/user/component/SetUpDivisionValue.vue";
 
 
 function createDefaultEditUser(): IEditUser {
@@ -45,12 +46,6 @@ function createDefaultIndividualMessage(): IEditIndividualMessage {
 
 
 const state = reactive<IManageUserPage>({
-  entireDivisionValue: {
-    [EMessageDivision.PUSH]: 300,
-    [EMessageDivision.SMS]: 3000,
-    [EMessageDivision.LMS]: 3000,
-    [EMessageDivision.MMS]: 3000,
-  },
   table: {
     rows: [],
     headers: [
@@ -106,7 +101,6 @@ onMounted(async () => {
   }
   limitMessageState.entireDivision = value.data;
 })
-const entireDivision = computed(() => limitMessageState.entireDivision.map(i => i.divisionValue))
 
 function createDefaultUser(): IUserRow {
   // eslint-disable-next-line no-return-assign
@@ -173,21 +167,17 @@ function handleRemove() {
   page.keys = [];
 }
 
-function handleChangeItems(item: string) {
-  state.entireDivisionValue = limitMessageState.entireDivision
-      .filter(i => i.divisionValue === item)[0]
-      .limitMessage;
-}
+
 
 const updatedRow = (item: ICrudRow) => {
   return {updated: item.inputStatus === EInputStatus.UPDATE};
 }
 
-function handleEditStartIndividualMessage(key:number){
+function handleEditStartIndividualMessage(key: number) {
   const findIndex = findIndexByKey(key);
   const findUser = state.table.rows[findIndex] as IUserRow;
 
-  Object.assign(state.editIndividualMessage,{
+  Object.assign(state.editIndividualMessage, {
     ...createDefaultIndividualMessage()
   });
 
@@ -239,20 +229,7 @@ const handlerGroup: Record<string, IEditHandler> = {
         <span class='fs-4'>구분값 설정</span>
       </v-card-title>
       <v-card-text>
-        <v-row class="align-center">
-          <v-col mb='8' sm='2' style='flex-basis: 300px'>
-            <v-select dense hide-details outlined :items="entireDivision" @change="handleChangeItems"></v-select>
-          </v-col>
-          <v-col v-for="(item,key) in state.entireDivisionValue" :key="key">
-            <div class='d-flex' style="width: 172px !important;">
-              <v-radio :label='key'></v-radio>
-              <v-text-field suffix='건' dense hide-details :value="item" class='mb-2'></v-text-field>
-            </div>
-          </v-col>
-          <v-col mb="1" sm="1">
-            <v-btn class="ma-0 light-navy-button">저장</v-btn>
-          </v-col>
-        </v-row>
+        <set-up-division-value></set-up-division-value>
       </v-card-text>
     </v-card>
     <v-card class="mt-5 pa-5">
@@ -260,7 +237,7 @@ const handlerGroup: Record<string, IEditHandler> = {
         <div>
           <span class="fw-semi-bold light-navy-blue fs-3">사용자 관리</span>
           <div>
-            <span class="fs-5 warm-gry fw-regular">TOTAL : 건</span>
+            <span class="fs-5 warm-gry fw-regular">TOTAL : {{state.table.rows.length}}건</span>
           </div>
         </div>
         <v-spacer></v-spacer>

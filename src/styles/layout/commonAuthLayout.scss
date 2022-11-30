@@ -21,14 +21,13 @@
   }
 
   .auth-inner {
-    width:18rem;
     z-index:1;
     .auth-card{
       padding:0.9375rem 0.875rem;
     }
+    width: 450px;
   }
   .auth-card{
-    border-radius: 41px 0px 0px 41px;
     height:600px;
   }
 
