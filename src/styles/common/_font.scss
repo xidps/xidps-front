@@ -1,0 +1,87 @@
+$thin: 100;
+$extra-light: 200;
+$light: 300;
+$regular: 400;
+$medium: 500;
+$semi-bold: 600;
+$bold: 700;
+$extra-bold: 800;
+$heavy: 900;
+
+$fs1: 24px;
+$fs2: 20px;
+$fs3: 18px;
+$fs4: 16px;
+$fs5: 14px;
+$fs6: 12px;
+$fs7: 10px;
+$fs8: 8px;
+
+.fs-1 {
+  font-size: $fs1 !important;
+}
+
+.fs-2 {
+  font-size: $fs2 !important;
+}
+
+.fs-3 {
+  font-size: $fs3 !important;
+}
+
+.fs-4 {
+  font-size: $fs4 !important;
+}
+
+.fs-5 {
+  font-size: $fs5 !important;
+}
+
+.fs-6 {
+  font-size: $fs6 !important;
+}
+
+.fs-7 {
+  font-size: $fs7 !important;
+}
+
+.fs-8 {
+  font-size: $fs8 !important;
+}
+
+.fw-thin {
+  font-weight: $thin !important;
+}
+
+.fw-extra-light {
+  font-weight: $extra-light !important;
+}
+
+.fw-light {
+  font-weight: $light !important;
+}
+
+.fw-regular {
+  font-weight: $regular !important;
+}
+
+.fw-medium {
+  font-weight: $medium !important;
+}
+
+.fw-semi-bold {
+  font-weight: $semi-bold !important;
+}
+
+.fw-bold {
+  font-weight: $bold !important;
+}
+
+.fw-extra-bold {
+  font-weight: $extra-bold !important;
+}
+
+.fw-heavy {
+  font-weight: $heavy !important;
+}
+
