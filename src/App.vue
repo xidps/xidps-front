@@ -51,6 +51,8 @@ watch(() => useLogger.logger, () => {
   loggerState.style = "red accent-2";
 });
 
+
+
 /**
  * @description 페이지 로딩 기능을 위한 코드
  */
