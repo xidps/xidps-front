@@ -39,7 +39,9 @@ export interface IEditUser {
    */
   var4: string;
 }
-
+export interface IExcelUser extends IEditUser{
+  userId:string
+}
 /**
  * @description 개인 메시지 편집값을 가지는 인터페이스입니다.
  */

@@ -12,12 +12,13 @@ import CustomModal from "@/components/CustomModal/CustomModal.vue";
 import ExcelImporter from "@/views/admin/user/ExcelImporter.vue";
 import {
   IEditIndividualMessage,
-  IEditUser,
+  IEditUser, IExcelUser,
   IManageUserPage,
   IMessageDivision,
   IResponseDivisionValueList, IUserRow
 } from "@/types/views/admin/user";
 import SetUpDivisionValue from "@/views/admin/user/component/SetUpDivisionValue.vue";
+import {useExcel} from "@/composables/useExcel";
 
 
 function createDefaultEditUser(): IEditUser {
@@ -168,7 +169,6 @@ function handleRemove() {
 }
 
 
-
 const updatedRow = (item: ICrudRow) => {
   return {updated: item.inputStatus === EInputStatus.UPDATE};
 }
@@ -182,6 +182,17 @@ function handleEditStartIndividualMessage(key: number) {
   });
 
   state.editIndividualMessage = createDefaultIndividualMessage();
+}
+
+function addUserByExcel(rows: IExcelUser[]) {
+  state.table.rows.unshift(...rows.map(row => ({
+    key: state.index += 1,
+    editStatus: EditStatus.EDIT_COMPLETION_STATUS,
+    inputStatus: EInputStatus.INSERT,
+    ...row
+  })))
+
+  handleCloseModal()
 }
 
 const handlerGroup: Record<string, IEditHandler> = {
@@ -222,7 +233,7 @@ const handlerGroup: Record<string, IEditHandler> = {
 <template>
   <div>
     <custom-modal :modal="modal" @close="handleCloseModal">
-      <excel-importer></excel-importer>
+      <excel-importer @insert-excel-data="addUserByExcel"></excel-importer>
     </custom-modal>
     <v-card class='division-setting'>
       <v-card-title>
@@ -237,7 +248,7 @@ const handlerGroup: Record<string, IEditHandler> = {
         <div>
           <span class="fw-semi-bold light-navy-blue fs-3">사용자 관리</span>
           <div>
-            <span class="fs-5 warm-gry fw-regular">TOTAL : {{state.table.rows.length}}건</span>
+            <span class="fs-5 warm-gry fw-regular">TOTAL : {{ state.table.rows.length }}건</span>
           </div>
         </div>
         <v-spacer></v-spacer>
