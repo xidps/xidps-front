@@ -11,8 +11,8 @@ const useAuth = useAuthStore();
 const useMenu = useMenuStore();
 
 const authority = useAuth.admin?.authority;
-const menus = useMenu.menus(authority);
 
+const adminMenus= useMenu.menus(authority);
 
 function handleLogout() {
   /*setTimeout(()=>{
@@ -35,7 +35,7 @@ function handleLogout() {
       <div class='navigation--user-profile'>
         <user-profile @click:logout='handleLogout'></user-profile>
       </div>
-      <navigation-menu :menus="menus"></navigation-menu>
+      <navigation-menu :menus="adminMenus"></navigation-menu>
     </v-navigation-drawer>
     <v-main class='mt-10 ml-10 mr-10'>
       <router-view></router-view>

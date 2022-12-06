@@ -1,7 +1,6 @@
 <script lang="ts" setup>
 import {EditStatus, EInputStatus, ICrudDataTable, ICrudRow} from "@/types/datagridview/crudDataTable";
-import {EMessageDivision} from "@/views/admin/user/index";
-import {computed, onMounted, reactive} from "vue";
+import { onMounted, reactive} from "vue";
 import {EditHandlerStyle, IEditHandler} from "@/types/datagridview/EditHandlerGroup/EditHandler/IEditHandler";
 import SearchTextBox from "@/components/CrudDataTable/EditHandlerGroup/SearchTextBox.vue";
 import EditHandler from "@/components/CrudDataTable/EditHandlerGroup/EditHandler.vue";
@@ -18,7 +17,6 @@ import {
   IResponseDivisionValueList, IUserRow
 } from "@/types/views/admin/user";
 import SetUpDivisionValue from "@/views/admin/user/component/SetUpDivisionValue.vue";
-import {useExcel} from "@/composables/useExcel";
 
 
 function createDefaultEditUser(): IEditUser {
@@ -193,6 +191,7 @@ function addUserByExcel(rows: IExcelUser[]) {
   })))
 
   handleCloseModal()
+
 }
 
 const handlerGroup: Record<string, IEditHandler> = {

@@ -1,6 +1,5 @@
-import Excel from "exceljs"
-import {IUser} from "@/types";
-import {IEditUser, IExcelUser, IUserRow} from "@/types/views/admin/user";
+import Excel from "exceljs";
+import { IEditUser, IExcelUser, IUserRow } from "@/types/views/admin/user";
 
 /*
 export async function useExcel() {
@@ -100,95 +99,86 @@ export async function useExcel() {
 */
 
 interface IExcelHeader {
-    header: string;
-    key: string
+  header: string;
+  key: string;
 }
 
 export async function useExcel(columns: IExcelHeader[], sampleData: any[]) {
-    const workbook = new Excel.Workbook;
+  const workbook = new Excel.Workbook();
 
-    workbook.creator = 'xidps';
-    workbook.lastModifiedBy = 'xidps visitor';
-    workbook.created = new Date();
-    workbook.modified = new Date();
-    workbook.addWorksheet("user upload example");
+  workbook.creator = "xidps";
+  workbook.lastModifiedBy = "xidps visitor";
+  workbook.created = new Date();
+  workbook.modified = new Date();
+  workbook.addWorksheet("user upload example");
 
-    const exampleSheet = workbook.getWorksheet("user upload example");
+  const exampleSheet = workbook.getWorksheet("user upload example");
 
-    exampleSheet.columns = columns;
-    sampleData.forEach((item) => {
-        exampleSheet.addRow(item);
+  exampleSheet.columns = columns;
+  sampleData.forEach((item) => {
+    exampleSheet.addRow(item);
+  });
+  const data = await workbook.xlsx.writeBuffer();
+  const blob = new Blob([data], {
+    type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  });
+  const url = window.URL.createObjectURL(blob);
 
-    });
-    const data = await workbook.xlsx.writeBuffer();
-    const blob = new Blob([data], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-    const url = window.URL.createObjectURL(blob);
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = `사용자_추가_예시.xlsx`;
+  anchor.click();
 
-    const anchor = document.createElement('a');
-    anchor.href = url;
-    anchor.download = `사용자_추가_예시.xlsx`;
-    anchor.click();
-
-    window.URL.revokeObjectURL(url);
+  window.URL.revokeObjectURL(url);
 }
 
 export async function useUploadExcel(file: File): Promise<IExcelUser[]> {
+  const wb = new Excel.Workbook();
+  const reader = new FileReader();
 
-    const wb = new Excel.Workbook();
-    const reader = new FileReader()
+  reader.readAsArrayBuffer(file);
 
-    reader.readAsArrayBuffer(file)
+  const data: IExcelUser[] = [];
 
-    const data: IExcelUser[] = [];
-
-    return new Promise((resolve, reject) => {
-        try {
-            reader.onload = async () => {
-                if (reader.result === null) {
-                    return;
-                }
-
-                const buffer = reader.result;
-
-                if (typeof buffer === 'string') {
-                    return;
-                }
-
-                const workbook = await wb.xlsx.load(buffer);
-                const sheet = workbook.getWorksheet("user upload example")
-
-                sheet.eachRow((row, rowNumber) => rowNumber !== 0 ? data.push(rowToUserRow(row)) : "");
-                resolve(data);
-            }
-            reader.onerror = (e) => {
-                reject(e);
-            }
-        } catch (e) {
-            reject(e);
+  return new Promise((resolve, reject) => {
+    try {
+      reader.onload = async () => {
+        if (reader.result === null) {
+          return;
         }
-    })
+
+        const buffer = reader.result;
+
+        if (typeof buffer === "string") {
+          return;
+        }
+
+        const workbook = await wb.xlsx.load(buffer);
+        const sheet = workbook.getWorksheet("user upload example");
+
+        sheet.eachRow((row, rowNumber) =>
+          rowNumber !== 0 ? data.push(rowToUserRow(row)) : ""
+        );
+        resolve(data);
+      };
+      reader.onerror = (e) => {
+        reject(e);
+      };
+    } catch (e) {
+      reject(e);
+    }
+  });
 }
 
 function rowToUserRow(row: Excel.Row): IExcelUser {
-    return {
-        userId: row.getCell(2).text,
-        name: row.getCell(3).text,
-        phoneNumber: row.getCell(4).text,
-        divisionValue: row.getCell(5).text,
-        var1: "",
-        var2: "",
-        var3: "",
-        var4: ""
-    }
+  return {
+    userId: row.getCell(2).text,
+    name: row.getCell(3).text,
+    phoneNumber: row.getCell(4).text,
+    divisionValue: row.getCell(5).text,
+    var1: "",
+    var2: "",
+    var3: "",
+    var4: "",
+  };
 }
-
-
-
-
-
-
-
-
-
-
-

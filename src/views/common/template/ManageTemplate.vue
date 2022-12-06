@@ -25,7 +25,7 @@ const data = reactive<IManageTemplatePage>({
     title: '',
     content: '',
   },
-  selectedIndex: -1
+  selectedIndex: -1,
 });
 
 interface ICreateTemplatePayload {
@@ -46,16 +46,27 @@ function removeTemplate(index: number) {
 
 function handleOpenTemplate(index: number) {
   data.selectedIndex = index;
+  data.template.title = data.templateList[data.selectedIndex].title;
+  data.template.content = data.templateList[data.selectedIndex].content;
+  updateTemplateModal.handleOpenModal();
 }
 
 const selectedTemplate = computed((): ITemplate | null => {
   if (data.selectedIndex === -1) {
     return data.template;
   }
-  updateTemplateModal.handleOpenModal();
   return data.templateList[data.selectedIndex];
-})
+});
 
+function saveTemplate() {
+  if (data.selectedIndex === -1) {
+    return;
+  }
+  data.templateList[data.selectedIndex].content = data.template.content;
+  data.templateList[data.selectedIndex].title = data.template.title;
+
+  updateTemplateModal.handleCloseModal();
+}
 </script>
 
 <template>
@@ -65,8 +76,9 @@ const selectedTemplate = computed((): ITemplate | null => {
         <v-col cols="9">
           <v-card class="message-editor mr-2">
             <v-card-text>
-              <v-text-field dense label='제목없음' v-model="data.template.title"  :value='selectedTemplate.title'></v-text-field>
-              <v-textarea v-model='data.template.content' :value="selectedTemplate.content">
+              <v-text-field dense label='제목없음' v-model="data.template.title"
+                            :value='selectedTemplate?.title'></v-text-field>
+              <v-textarea v-model='data.template.content' :value="selectedTemplate?.content">
               </v-textarea>
             </v-card-text>
           </v-card>
@@ -87,7 +99,7 @@ const selectedTemplate = computed((): ITemplate | null => {
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn class="light-navy-button" width="120" @click='addTemplate'>저장하기</v-btn>
+        <v-btn class="light-navy-button" width="120" @click='saveTemplate'>저장하기</v-btn>
       </v-card-actions>
     </custom-modal>
     <custom-modal :modal="createTemplateModal.modal" @close="createTemplateModal.handleCloseModal()">

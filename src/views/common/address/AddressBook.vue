@@ -19,7 +19,7 @@ const emit = defineEmits<{
   (e: 'click:edit-start', payload: IAddressBook): void
   (e: 'click:edit-end', payload: IEditAddressPayload): void
   (e: 'click:edit-cancel', payload: IAddressBook): void
-  (e: 'click:item-delete', payload:IAddressBook) :void
+  (e: 'click:item-delete', payload: IAddressBook): void
 }>();
 
 const data = reactive({
@@ -38,7 +38,7 @@ const handleClickAdd = () => {
 };
 const handleChangeActive = (item: IAddressBook[]) => {
   if (item.length === 0) {
-    emit('click:item', {item:null} );
+    emit('click:item', {item: null});
     return;
   }
   // eslint-disable-next-line prefer-destructuring
@@ -46,7 +46,7 @@ const handleChangeActive = (item: IAddressBook[]) => {
 };
 
 function handleEditStart(item: IAddressBook) {
-  console.log(data);
+  data.editText = item.name;
   emit('click:edit-start', item);
 }
 
@@ -55,12 +55,15 @@ function handleEditEnd(item: IAddressBook) {
     item,
     editText: data.editText
   })
+  data.editText = "";
 }
 
 function handleEditCancel(item: IAddressBook) {
   emit('click:edit-cancel', item);
+  data.editText = "";
 }
-function handleDelete(item: IAddressBook){
+
+function handleDelete(item: IAddressBook) {
   emit('click:item-delete', item);
 }
 </script>
@@ -76,7 +79,7 @@ function handleDelete(item: IAddressBook){
           </v-btn>
         </template>
       </v-text-field>
-      <div class='treeview-wrap'>
+      <div class='treeview-wrap scroll '>
         <v-treeview
             v-model='data.tree'
             :items='prop.addressItems'
@@ -90,15 +93,17 @@ function handleDelete(item: IAddressBook){
             @update:active='handleChangeActive'
         >
           <template v-slot:prepend='{open}'>
-            <v-btn icon>
-              <v-icon class='lavender'>{{ open ? "mdi-folder-open" : "mdi-folder" }}</v-icon>
-            </v-btn>
+
+            <v-icon class="lavender">
+              {{ open ? "mdi-folder-open" : "mdi-folder" }}
+            </v-icon>
+
           </template>
           <template #label='{item,active}'>
             <div style="min-width:240px">
               <div v-if="item.editStatus === EditStatus.EDITING_STATUS" class="d-flex align-center">
                 <div style="width:100px;margin-bottom:10px">
-                  <v-text-field v-model="data.editText" dense hide-details outline></v-text-field>
+                  <v-text-field v-model="data.editText" dense hide-details outline @click.stop=""></v-text-field>
                 </div>
                 <v-btn class="light-navy-blue" icon @click.stop="handleEditEnd(item)">
                   <v-icon>mdi-check</v-icon>

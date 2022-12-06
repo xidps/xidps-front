@@ -77,7 +77,7 @@ export const useMenuStore = defineStore("menu", {
           icon: "mdi-card-account-mail",
           children: [
             {
-              to: ERouter.MANAGE_PERSONAL_ADDRESS,
+              to: ERouter.MANAGE_ADDRESS,
               title: "주소록 관리",
             },
             {
@@ -97,16 +97,13 @@ export const useMenuStore = defineStore("menu", {
     } as IMenuStore),
 
   getters: {
-    menus:
-      (state) =>
-      (authority: EAuthority | undefined): IMenu[] => {
+    menus: (state) => {
+      return (authority: EAuthority | undefined): IMenu[] => {
         if (authority === EAuthority.ADMIN) {
           return state.adminMenu;
         }
-        if (authority === EAuthority.MANAGER) {
-          return state.manageMenu;
-        }
-        return [];
-      },
+        return authority === EAuthority.MANAGER ? state.manageMenu : [];
+      };
+    },
   },
 });

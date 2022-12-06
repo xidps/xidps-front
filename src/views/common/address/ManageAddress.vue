@@ -16,6 +16,7 @@ import EditHandlerGroup from "@/components/CrudDataTable/EditHandlerGroup/EditHa
 import EditHandler from "@/components/CrudDataTable/EditHandlerGroup/EditHandler.vue";
 import {EditHandlerStyle, IEditHandler} from "@/types/datagridview/EditHandlerGroup/EditHandler/IEditHandler";
 import FindUserForm from "@/views/common/address/FindUserForm.vue";
+import {useLoggerStore} from "@/store/logger/useLoggerStore";
 
 /**
  * declare ManageAddress page type
@@ -38,7 +39,9 @@ interface ManagedAddressPage extends ICrudDataTable {
    * 주소록에서 선택된 사용자의 목록을 표시해주는 헤더입니다.
    */
   findUserHeaders: ICrudDataTableHeader[],
-  selectedTable: IUserRow[] | null
+
+  selected: boolean;
+  selectedTable: IUserRow[]
 }
 
 /**
@@ -77,7 +80,8 @@ const data = reactive<ManagedAddressPage>({
   selectedKey: 'key',
   usePageable: true,
   tableTitle: '주소록관리',
-  selectedTable: null,
+  selected: false,
+  selectedTable: [],
   addressBook: [],
   addressIndex: 0,
   selectedAddress: null,
@@ -103,6 +107,14 @@ const importModalSelect = useModal({isShow: false, title: '', width: 530});
 const excelImportModal = useModal({isShow: false, title: '엑셀로 불러오기'});
 const userImportModal = useModal({isShow: false, title: '사용자 추가로 주소록 생성', width: 680});
 
+/**
+ * page
+ */
+const page = reactive({
+  pageCount: 0,
+  nowPage: 1,
+  keys: [],
+});
 const createDefaultAddress = (): IAddressBook => ({
   id: data.addressIndex += 1,
   name: '(제목없음)',
@@ -120,20 +132,19 @@ const addNewAddressBook = () => {
   data.selectedAddress.children.push(createDefaultAddress());
 };
 
-function handleEditStart(item: IAddressBook) {
-  item.editStatus = EditStatus.EDITING_STATUS;
-}
 
 const updateTableName = (payload: IClickItemPayload) => {
   data.selectedAddress = payload.item;
 
   if (payload.item === null) {
     data.tableTitle = '선택되지 않음';
-    data.selectedTable = null;
+    data.selectedTable = [];
+    data.selected = false;
     return;
   }
   data.tableTitle = payload.item.name;
   data.selectedTable = payload.item.users;
+  data.selected = true;
 };
 
 function createDefaultUser(): IUserRow {
@@ -154,22 +165,33 @@ function createDefaultUser(): IUserRow {
 }
 
 function handleAddUser() {
+  console.log(data.selectedTable);
   data.selectedTable?.unshift(createDefaultUser());
 }
 
-function handleAddressStartEdit(item: IAddressBook) {
+function handleEditStart(item: IAddressBook) {
   item.editStatus = EditStatus.EDITING_STATUS;
 }
 
 function handleAddressEndEdit(payload: IEditAddressPayload) {
+  data.tableTitle = payload.editText;
   payload.item.editStatus = EditStatus.EDIT_COMPLETION_STATUS;
   payload.item.name = payload.editText;
+
 }
 
 function handleAddressCancelEdit(item: IAddressBook) {
   item.editStatus = EditStatus.EDIT_COMPLETION_STATUS;
 }
 
+function handleDeleteAddress(item: IAddressBook) {
+  if (item.children.length) {
+    useLoggerStore().error({
+      message: "해당 그룹은 삭제할 수 없는 그룹으로 포함하는 다른 그룹들을 먼저 삭제하세요."
+    })
+    return;
+  }
+}
 
 const handlerGroup: Record<string, IEditHandler> = {
   delete: {
@@ -200,7 +222,7 @@ const handlerGroup: Record<string, IEditHandler> = {
   }
 }
 
-const handlerDisable = computed(() => data.selectedTable === null);
+const handlerDisable = computed(() => !data.selected)
 </script>
 
 <template>
@@ -262,8 +284,47 @@ const handlerDisable = computed(() => data.selectedTable === null);
         <v-data-table
             dense
             :headers="data.headers"
+            :items="data.selectedTable"
             class="data-grid-view"
-            :height="755">
+            :height="755"
+
+            v-model="page.keys"
+            item-key="key"
+            :disable-pagination="false"
+            :show-select="true"
+            :footer-props="{itemsPerPageOptions:[20]}"
+            hide-default-footer
+        >
+          <template v-slot:item="{item,index,isSelected,select}">
+            <tr :key='index'>
+              <td class='fixed'>
+                <v-checkbox
+                    :input-value='isSelected'
+                    @click='select(item)'
+                    dense hide-details></v-checkbox>
+              </td>
+              <template v-if="item.editStatus === EditStatus.EDITING_STATUS">
+              </template>
+              <template v-else>
+                <td>{{ item.userId }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.phoneNumber }}</td>
+                <td>{{ item.divisionValue }}</td>
+                <td>{{ item.var1 }}</td>
+                <td>{{ item.var2 }}</td>
+                <td>{{ item.var3 }}</td>
+                <td>{{ item.var4 }}</td>
+                <td>
+                  <v-btn @click="handleEditStart(item.key)" icon>
+                    <v-icon>mdi-pencil</v-icon>
+                  </v-btn>
+                  <v-btn icon>
+                    <v-icon @click="item.individualMessage=true">mdi-cog</v-icon>
+                  </v-btn>
+                </td>
+              </template>
+            </tr>
+          </template>
         </v-data-table>
       </v-card>
     </v-col>
@@ -271,7 +332,7 @@ const handlerDisable = computed(() => data.selectedTable === null);
 </template>
 
 <style lang='scss' scoped>
-
+@import "~@/styles/common/dataTable/crudDataTable.scss";
 
 .import-select-btn {
   width: 170px !important;

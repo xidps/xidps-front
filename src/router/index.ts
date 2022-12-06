@@ -65,6 +65,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/common/template/ManageTemplate.vue"),
     beforeEnter: useOnlyAuthenticationUserGuard,
   },
+  {
+    path: ERouter.MANAGE_ADDRESS,
+    component: () => import("@/views/common/address/ManageAddress.vue"),
+    beforeEnter: useOnlyAuthenticationUserGuard,
+  },
   /**
    * 예시 라우터
    */

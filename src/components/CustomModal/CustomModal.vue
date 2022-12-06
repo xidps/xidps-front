@@ -18,8 +18,8 @@ function handleCloseModal() {
 </script>
 
 <template>
-  <v-dialog class="rounded" persistent :value="modal.isShow" :width="modal.width">
-    <v-card class="pa-5">
+  <v-dialog class="rounded " persistent :value="modal.isShow" :width="modal.width">
+    <v-card class="pa-5 scroll">
       <v-card-actions>
         <span>{{ modal.title }}</span>
         <v-spacer></v-spacer>

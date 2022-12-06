@@ -1,23 +1,24 @@
 <script lang='ts' setup>
-import {
-  reactive, withDefaults, defineProps, defineEmits,
-} from 'vue';
+import {defineProps, reactive, withDefaults,} from 'vue';
 
-interface IAddressBook{
-  id:number,
+interface IAddressBook {
+  id: number,
   selectedId: -1,
   tree: [],
-  items:[],
   selectedNode: null,
   children: IAddressBook[]
 }
 
 interface Props {
   addressItems?: IAddressBook[]
+  title?: string
 }
 
 const prop = withDefaults(defineProps<Props>(), {
-});
+      title: "",
+      addressItems: () => ([])
+    }
+)
 
 const data = reactive({
   id: 0,
@@ -32,48 +33,45 @@ const data = reactive({
 <template>
   <div class='address-book-wrap'>
     <v-card-actions class='address-book-title'>
-      <span class='light-navy-blue fs-5 fw-bold'>동아리 공지</span>
+      <span class='light-navy-blue fs-5 fw-bold'>{{ title }}</span>
       <v-spacer></v-spacer>
       <v-checkbox dense hide-details></v-checkbox>
     </v-card-actions>
-    <div class='treeview-wrap'>
+    <div class='treeview-wrap scroll'>
       <v-treeview
-          :items='prop.addressItems'
           v-model='data.tree'
+          :items='prop.addressItems'
           activatable
-          return-object
-          dense
           class='address-book'
+          dense
+          overflow-x-auto
+          return-object
+          selectable
           transition
-          expand-icon=''
       >
-        <template v-slot:prepend='{open}'>
-          <v-btn icon>
-            <v-icon class='lavender'>{{open ? "mdi-folder-open" : "mdi-folder"}}</v-icon>
-          </v-btn>
-        </template>
-        <template #append='{item}'>
-          <v-checkbox v-model='data.items' dense  :value='item.id'></v-checkbox>
-        </template>
       </v-treeview>
     </div>
   </div>
 </template>
 
 <style lang='scss' scoped>
+.treeview-wrap{
+  overflow: auto;
+  height: 360px;
+}
 .address-book-wrap {
+  overflow: initial;
+  text-overflow: initial;
+  height: 100%;
   border: 1px solid $light-gray;
-  height:100%;
-  .address-book-title{
-    border-bottom:1px solid $light-gray;
+
+  .address-book-title {
+    border-bottom: 1px solid $light-gray;
   }
 }
-
-.treeview-wrap {
-  overflow: auto;
+.v-treeview{
+  min-width: max-content;
+  max-width: 100%;
 }
 
-.address-book {
-  max-width: max-content;
-}
 </style>
