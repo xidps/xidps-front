@@ -70,6 +70,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/common/address/ManageAddress.vue"),
     beforeEnter: useOnlyAuthenticationUserGuard,
   },
+  {
+    path: ERouter.SEND_RESULT,
+    component: () => import("@/views/common/result/SendResult.vue"),
+    beforeEnter: useOnlyAuthenticationUserGuard,
+  },
   /**
    * 예시 라우터
    */

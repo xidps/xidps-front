@@ -86,11 +86,20 @@ export const useMenuStore = defineStore("menu", {
             },
           ],
         },
-
         {
           title: "템플릿 관리",
           icon: "mdi-grid",
           to: ERouter.MANAGE_TEMPLATE,
+        },
+        {
+          title: "전송결과",
+          icon: "mdi-file-search",
+          children: [
+            {
+              to: ERouter.SEND_RESULT,
+              title: "메시지 전송 결과",
+            },
+          ],
         },
       ],
       all: [{}],

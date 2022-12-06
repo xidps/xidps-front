@@ -14,5 +14,5 @@ export enum ERouter {
   MANAGE_PERSONAL_ADDRESS = "/manage-personal-address",
   MANAGE_RECEIPT_BLOCKING = "/receipt-receipt-blocknig",
   MANAGE_TEMPLATE = "/manager/manage-template",
-  SEND_RESULT = "/send-result",
+  SEND_RESULT = "/manager/send-result",
 }
