@@ -75,6 +75,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("@/views/common/result/SendResult.vue"),
     beforeEnter: useOnlyAuthenticationUserGuard,
   },
+  {
+    path: ERouter.RESERVATION_RESULT,
+    component: () => import("@/views/common/result/ReservationResult.vue"),
+    beforeEnter: useOnlyAuthenticationUserGuard,
+  },
   /**
    * 예시 라우터
    */

@@ -15,4 +15,5 @@ export enum ERouter {
   MANAGE_RECEIPT_BLOCKING = "/receipt-receipt-blocknig",
   MANAGE_TEMPLATE = "/manager/manage-template",
   SEND_RESULT = "/manager/send-result",
+  RESERVATION_RESULT = "/manager/reservation-result",
 }

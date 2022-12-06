@@ -99,6 +99,10 @@ export const useMenuStore = defineStore("menu", {
               to: ERouter.SEND_RESULT,
               title: "메시지 전송 결과",
             },
+            {
+              to: ERouter.RESERVATION_RESULT,
+              title: "예약 내역",
+            },
           ],
         },
       ],
